@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <UserSecretsId>4f7ad66a-cfd1-4368-becf-a0ed2f00c926</UserSecretsId>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.AzureAD.UI" Version="3.1.13" />
+    <PackageReference Include="Microsoft.Identity.Web" Version="1.10.0" />
+    <PackageReference Include="Microsoft.Identity.Web.UI" Version="1.10.0" />
+  </ItemGroup>
 
 </Project>
