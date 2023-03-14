@@ -5,28 +5,25 @@ using Azure.Data.Tables;
 
 using Microsoft.Azure.WebJobs;
 using Microsoft.Extensions.Logging;
-using Microsoft.WindowsAzure.Storage.Table;
 
 namespace SendSummarizedEmailToTeams.Func
 {
     public class GetItemsToProcess
     {
         [FunctionName("GetItemsToProcess")]
-        public async Task Run(
-            [TimerTrigger("0 */5 * * * *")] TimerInfo myTimer,
-             [Queue("ItemsToProcess", Connection = "StorageConnection")] IAsyncCollector<ItemToProcess> collector,
-
-             //[Table("ItemsToProcess", Connection = "StorageConnection")] CloudTable tableClient,
+        public static async Task Run(
+            [TimerTrigger("*/5 * * * * *")] TimerInfo myTimer,
+            [Queue("items-to-process", Connection = "StorageConnection")] IAsyncCollector<ItemToProcess> collector,
+            [Table("ItemsToProcess", Connection = "StorageConnection")] TableClient tableClient,
             ILogger log)
         {
             log.LogInformation($"C# Timer trigger function executed at: {DateTime.Now}");
-            //var query = new TableQuery<ItemToProcess>();
-            //var itemsToProcess = tableClient.);
+            var itemsToProcess = tableClient.QueryAsync<ItemToProcess>();
 
-            //await foreach (ItemToProcess itemToProcess in itemsToProcess)
-            //{
-            //    await collector.AddAsync(itemToProcess);
-            //}
+            await foreach (ItemToProcess itemToProcess in itemsToProcess)
+            {
+                await collector.AddAsync(itemToProcess);
+            }
         }
     }
 }
