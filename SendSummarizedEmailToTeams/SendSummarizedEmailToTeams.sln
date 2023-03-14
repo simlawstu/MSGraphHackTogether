@@ -5,7 +5,9 @@ VisualStudioVersion = 17.5.33424.131
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendSummarizedEmailToTeams", "SendSummarizedEmailToTeams\SendSummarizedEmailToTeams.csproj", "{2BA9B304-8124-4170-95A7-E926CB93FA66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SummarizeEmailsAndSend", "SummarizeEmailsAndSend\SummarizeEmailsAndSend.csproj", "{22980CBF-4C3B-4C85-B7B8-ABCE537EE371}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SummarizeEmailsAndSend", "SummarizeEmailsAndSend\SummarizeEmailsAndSend.csproj", "{22980CBF-4C3B-4C85-B7B8-ABCE537EE371}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SendSummarizedEmailToTeams.Func", "SendSummarizedEmailToTeams.Func\SendSummarizedEmailToTeams.Func.csproj", "{0BDC79D4-EDA1-4EFB-8056-AEB38CBFFCFE}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,6 +23,10 @@ Global
 		{22980CBF-4C3B-4C85-B7B8-ABCE537EE371}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22980CBF-4C3B-4C85-B7B8-ABCE537EE371}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22980CBF-4C3B-4C85-B7B8-ABCE537EE371}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0BDC79D4-EDA1-4EFB-8056-AEB38CBFFCFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0BDC79D4-EDA1-4EFB-8056-AEB38CBFFCFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0BDC79D4-EDA1-4EFB-8056-AEB38CBFFCFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0BDC79D4-EDA1-4EFB-8056-AEB38CBFFCFE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
