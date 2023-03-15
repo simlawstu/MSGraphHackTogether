@@ -26,8 +26,6 @@ namespace SendSummarizedEmailToTeams.SummarizeMessage
 
         public TextAnalyticsClient Build()
         {
-            _logger.LogInformation(_options.Endpoint);
-            _logger.LogInformation(_options.Key);
             if (_options.Endpoint == null)
             {
                 throw new InvalidOperationException("You must provide a value for endpoint.");
