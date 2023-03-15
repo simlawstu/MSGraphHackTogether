@@ -43,74 +43,73 @@ namespace SendSummarizedEmailToTeams.Controllers
 
         public async Task<IActionResult> Index(string emailId)
         {
-            
-            var messages = await _mailRetrievalService.GetMail();
-            var teamChannels = await _channelRetrievalService.GetTeamChannels();
-            
-            var viewModel = new IndexViewModel();
-            viewModel.Mail = messages;
-            viewModel.Teams = teamChannels;
+            var viewModel = await GetViewModel(emailId);
 
-            if (!string.IsNullOrWhiteSpace(emailId))
-            {
-                var selectedMessage = messages.FirstOrDefault(m => m.Id == emailId);
-                viewModel.SelectedMail = selectedMessage;
-            }
-            
             return View(viewModel);
         }
 
         public async Task<IActionResult> PostToChannel(string emailId, string teamId, string channelId)
         {
-            var messages = await _mailRetrievalService.GetMail();
-            var teamChannels = await _channelRetrievalService.GetTeamChannels();
-
-            var viewModel = new IndexViewModel();
-            viewModel.Mail = messages;
-            viewModel.Teams = teamChannels;
-            if (!string.IsNullOrWhiteSpace(emailId))
+            if (string.IsNullOrEmpty(emailId))
             {
-                var selectedMessage = messages.First(m => m.Id == emailId);
-                viewModel.SelectedMail = selectedMessage;
-                var messagetoSummarize = _mapper.Map<MessageToSummarize>(selectedMessage);
-                var summarizedmail = await _summarizeMessageService.SummarizeMessage(messagetoSummarize);
-
-                var requestBody = new ChatMessage
-                {
-                    Subject = $"Summarized message: '{selectedMessage.Subject}' from: '{selectedMessage.From}'.",
-                    Body = new ItemBody
-                    {
-                        Content = summarizedmail.Summary,
-                    },
-                };
-                var result = await _channelPostingService.PostMessageToChannel(teamId, channelId, requestBody);
+                throw new ArgumentException($"'{nameof(emailId)}' cannot be null or empty.", nameof(emailId));
             }
 
-            return View("index",viewModel);
-        }
-
-        public async Task<IActionResult> Privacy()
-        {
-            string teamId = "bf93dcbf-7e6b-4373-a567-ea967265d678";
-            string channelId = "19:b28ae3dbbadf484b9877fc342bce5709@thread.tacv2";
-                        
-            var requestBody = new ChatMessage
+            if (string.IsNullOrEmpty(teamId))
             {
-                Body = new ItemBody
-                {
-                    Content = "Hello world",
-                },
-            };
+                throw new ArgumentException($"'{nameof(teamId)}' cannot be null or empty.", nameof(teamId));
+            }
 
+            if (string.IsNullOrEmpty(channelId))
+            {
+                throw new ArgumentException($"'{nameof(channelId)}' cannot be null or empty.", nameof(channelId));
+            }
+
+            var viewModel = await GetViewModel(emailId);
+
+            var selectedMail = viewModel.SelectedMail;
+            if(selectedMail == null)
+            {
+                throw new InvalidOperationException("Mail Selected doesn't actually exist");
+            }
+
+            var messagetoSummarize = _mapper.Map<MessageToSummarize>(viewModel.SelectedMail);
+            var summarizedmail = await _summarizeMessageService.SummarizeMessage(messagetoSummarize);
+
+            var requestBody = new MessageToPost
+            {
+                Subject = $"Summarized message: '{selectedMail.Subject}' from: '{selectedMail.From}'.",
+                Body = summarizedmail.Summary
+            };
             var result = await _channelPostingService.PostMessageToChannel(teamId, channelId, requestBody);
 
-            return View();
+            return View("index",viewModel);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+        }
+
+        private async Task<IndexViewModel> GetViewModel(string emailId)
+        {
+            var messages = await _mailRetrievalService.GetMail();
+            var teamChannels = await _channelRetrievalService.GetTeamChannels();
+
+            var viewModel = new IndexViewModel
+            {
+                Mail = messages,
+                Teams = teamChannels
+            };
+
+            if(!string.IsNullOrWhiteSpace(emailId))
+            {
+                var selectedMessage = messages.First(m => m.Id == emailId);
+                viewModel.SelectedMail = selectedMessage;
+            }
+
+            return viewModel;
         }
     }
 }

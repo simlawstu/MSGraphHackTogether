@@ -36,7 +36,7 @@
         }
     </div>
     <div class="col col-2">
-        <h1 class="mb-3">Channels</h1>
+        <h1 class="mb-3">Channels To Send Summary To</h1>
         <div class="list-unstyled list-group">
             @foreach (var team in Model.Teams)
             {
@@ -49,11 +49,11 @@
                             if (!Model.EmailSelected)
                             {
                                 cssClass += " disabled";
-                                @Html.ActionLink(channel.Name, "PostToChannel", "Home", new { emailId = Model.SelectedMail?.Id, teamId = team.Id, channelId = channel.Id}, new { @class = cssClass })
+                                @Html.ActionLink($"Send to {channel.Name}", "PostToChannel", "Home", new { emailId = Model.SelectedMail?.Id, teamId = team.Id, channelId = channel.Id}, new { @class = cssClass })
                             }
                             else
                             {
-                                @Html.ActionLink(channel.Name, "PostToChannel", "Home", new { emailId = Model.SelectedMail?.Id, teamId = team.Id, channelId = channel.Id}, new { @class = cssClass })
+                                @Html.ActionLink($"Send to {channel.Name}", "PostToChannel", "Home", new { emailId = Model.SelectedMail?.Id, teamId = team.Id, channelId = channel.Id}, new { @class = cssClass })
                             }
                         }
                     </div>

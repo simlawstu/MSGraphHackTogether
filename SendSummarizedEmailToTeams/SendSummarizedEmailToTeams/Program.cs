@@ -48,6 +48,7 @@ services.AddAutoMapper((config) =>
         config.AddProfile<SendSummarizedEmailToTeams.MailRetrieval.MapperProfile>();
         config.AddProfile<SendSummarizedEmailToTeams.ChannelRetrieval.MapperProfile>();
         config.AddProfile<SendSummarizedEmailToTeams.Controllers.MapperProfile>();
+        config.AddProfile<SendSummarizedEmailToTeams.ChannelPosting.MapperProfile>();
     });
 
 builder.Services.AddRazorPages()

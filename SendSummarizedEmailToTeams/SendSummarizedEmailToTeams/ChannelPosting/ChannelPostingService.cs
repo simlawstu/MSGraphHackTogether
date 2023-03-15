@@ -14,10 +14,12 @@ namespace SendSummarizedEmailToTeams.ChannelPosting
             _mapper = mapper ?? throw new ArgumentNullException(nameof(mapper));
         }
 
-        public async Task<ChatMessage?> PostMessageToChannel(string teamId, string channelId, ChatMessage? requestBody)
+        public async Task<ChatMessage?> PostMessageToChannel(string teamId, string channelId, MessageToPost messageToPost)
         {
+            var chatMessage = _mapper.Map<ChatMessage>(messageToPost);
+
             var result = await _client.Teams[$"{teamId}"]
-                .Channels[$"{channelId}"].Messages.Request().AddAsync(requestBody);
+                .Channels[$"{channelId}"].Messages.Request().AddAsync(chatMessage);
 
             return result;
         }
