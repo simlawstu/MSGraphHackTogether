@@ -8,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Graph;
 using SendSummarizedEmailToTeams.ChannelPosting;
 using SendSummarizedEmailToTeams.MailRetrieval;
+using SendSummarizedEmailToTeams.SummarizeMessage;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -31,6 +32,7 @@ namespace SendSummarizedEmailToTeams
             services.AddScoped((provider) => graphServiceClient);
             services.AddScoped<IMailRetrievalService, MailRetrievalService>();
             services.AddScoped<IChannelPostingService, ChannelPostingService>();
+            services.AddScoped<ISummarizeMessageService, SummarizeMessageService>();
             services.AddAutoMapper((config) => config.AddProfile<MailRetrieval.MapperProfile>());
             
             services.AddControllersWithViews();

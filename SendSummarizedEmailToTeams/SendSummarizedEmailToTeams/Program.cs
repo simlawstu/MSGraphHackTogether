@@ -6,6 +6,7 @@ using Microsoft.Identity.Web.UI;
 using SendSummarizedEmailToTeams.ChannelRetrieval;
 using SendSummarizedEmailToTeams.ChannelPosting;
 using SendSummarizedEmailToTeams.MailRetrieval;
+using SendSummarizedEmailToTeams.SummarizeMessage;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,11 +38,12 @@ var services = builder.Services;
 services.AddScoped<IMailRetrievalService, MailRetrievalService>();
 services.AddScoped<IChannelPostingService, ChannelPostingService>();
 services.AddScoped<IChannelRetrievalService, ChannelRetrievalService>();
+services.AddScoped<ISummarizeMessageService, SummarizeMessageService>();
 services.AddAutoMapper((config) =>
     {
         config.AddProfile<SendSummarizedEmailToTeams.MailRetrieval.MapperProfile>();
         config.AddProfile<SendSummarizedEmailToTeams.ChannelRetrieval.MapperProfile>();
-        config.AddProfile< SendSummarizedEmailToTeams.ChannelPosting.MapperProfile>();
+        //config.AddProfile< SendSummarizedEmailToTeams.ChannelPosting.MapperProfile>();
     });
 
 builder.Services.AddRazorPages()
