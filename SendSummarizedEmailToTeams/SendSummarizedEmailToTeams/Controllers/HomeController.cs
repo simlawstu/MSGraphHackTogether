@@ -70,6 +70,14 @@ namespace SendSummarizedEmailToTeams.Controllers
             {
                 var selectedMessage = messages.FirstOrDefault(m => m.Id == emailId);
                 viewModel.SelectedMail = selectedMessage;
+                var requestBody = new ChatMessage 
+                { 
+                    Body = new ItemBody 
+                    { 
+                        Content = selectedMessage?.Body 
+                    },  
+                 };
+                var result = await _channelPostingService.PostMessageToChannel(teamId, channelId, requestBody);
             }
 
             return View("index",viewModel);
