@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Microsoft.Graph;
+using Microsoft.Graph.Models;
 using SendSummarizedEmailToTeams.Models;
 using System;
 using System.Collections.Generic;
@@ -43,9 +44,9 @@ namespace SendSummarizedEmailToTeams.Controllers
                 },
             };
 
-            var result = graphClient.Teams[$"{teamId}"]
-                .Channels[$"{channelId}"].Messages;
-                //.PostAsync(requestBody);
+            var result = await graphClient.Teams[$"{teamId}"]
+                .Channels[$"{channelId}"].Messages
+                .PostAsync(requestBody);
 
             return View();
         }
