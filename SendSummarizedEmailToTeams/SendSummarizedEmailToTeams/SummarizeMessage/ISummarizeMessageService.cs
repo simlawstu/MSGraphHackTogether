@@ -5,8 +5,6 @@ namespace SendSummarizedEmailToTeams.SummarizeMessage
 {
     public interface ISummarizeMessageService
     {
-        Task SummarizeMessage(RetrievedMail mail);
-
-        Task TextSummarizationMessage(TextAnalyticsClient client, RetrievedMail mail);
+        Task<SummarizedMessage> SummarizeMessage(MessageToSummarize messageToSummarize);
     }
 }

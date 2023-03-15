@@ -7,6 +7,8 @@ using SendSummarizedEmailToTeams.ChannelRetrieval;
 using SendSummarizedEmailToTeams.ChannelPosting;
 using SendSummarizedEmailToTeams.MailRetrieval;
 using SendSummarizedEmailToTeams.SummarizeMessage;
+using Azure.AI.TextAnalytics;
+using SendSummarizedEmailToTeams.Abstractions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,15 +37,17 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 var services = builder.Services;
+services.Configure<CognitiveServicesOptions>(builder.Configuration.GetSection(CognitiveServicesOptions.ConfigKey));
 services.AddScoped<IMailRetrievalService, MailRetrievalService>();
 services.AddScoped<IChannelPostingService, ChannelPostingService>();
 services.AddScoped<IChannelRetrievalService, ChannelRetrievalService>();
 services.AddScoped<ISummarizeMessageService, SummarizeMessageService>();
+services.AddScoped<IFactory<TextAnalyticsClient>, TextAnalyticsClientFactory>();
 services.AddAutoMapper((config) =>
     {
         config.AddProfile<SendSummarizedEmailToTeams.MailRetrieval.MapperProfile>();
         config.AddProfile<SendSummarizedEmailToTeams.ChannelRetrieval.MapperProfile>();
-        //config.AddProfile< SendSummarizedEmailToTeams.ChannelPosting.MapperProfile>();
+        config.AddProfile<SendSummarizedEmailToTeams.Controllers.MapperProfile>();
     });
 
 builder.Services.AddRazorPages()

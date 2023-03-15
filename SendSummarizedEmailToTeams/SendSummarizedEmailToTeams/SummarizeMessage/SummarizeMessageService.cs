@@ -1,66 +1,55 @@
-﻿using Azure;
-using System;
-using Azure.AI.TextAnalytics;
-using System.Threading.Tasks;
-using System.Collections.Generic;
-using SendSummarizedEmailToTeams.MailRetrieval;
+﻿using Azure.AI.TextAnalytics;
+
+using SendSummarizedEmailToTeams.Abstractions;
 
 namespace SendSummarizedEmailToTeams.SummarizeMessage
 {
     public class SummarizeMessageService : ISummarizeMessageService
     {
-        private readonly AzureKeyCredential credentials = new AzureKeyCredential("key");
-        private readonly Uri endpoint = new("https://localhost.com");
+        private readonly IFactory<TextAnalyticsClient> _clientFactory;
 
-        public async Task SummarizeMessage(RetrievedMail mail)
+        public SummarizeMessageService(IFactory<TextAnalyticsClient> clientFactory)
         {
-            var client = new TextAnalyticsClient(endpoint, credentials);
-            await TextSummarizationMessage(client, mail);
+            _clientFactory = clientFactory ?? throw new ArgumentNullException(nameof(clientFactory));
         }
-        public async Task TextSummarizationMessage(TextAnalyticsClient client, RetrievedMail mail)
-        {            
-            string document = mail.ToString();
-            var batchInput = new List<string>
+
+        public async Task<SummarizedMessage> SummarizeMessage(MessageToSummarize messageToSummarize)
+        {
+            var batchInput = new List<string>()
             {
-                document
+                messageToSummarize.Subject,
+                messageToSummarize.Body
             };
 
-            TextAnalyticsActions actions = new TextAnalyticsActions()
+            var actions = new TextAnalyticsActions()
             {
-                ExtractKeyPhrasesActions = new List<ExtractKeyPhrasesAction>() { new ExtractKeyPhrasesAction() }
-                //ExtractSummaryActions = new List<ExtractSummaryAction>() { new ExtractSummaryAction() }
+                ExtractSummaryActions = new List<ExtractSummaryAction>() { new ExtractSummaryAction() }
             };
 
-            //Start analysing process
-            AnalyzeActionsOperation operation = await client.StartAnalyzeActionsAsync(batchInput, actions);
+            var client = _clientFactory.Build();
+            var operation = await client.StartAnalyzeActionsAsync(batchInput, actions);
             await operation.WaitForCompletionAsync();
 
-            //view operation result
-            await foreach (AnalyzeActionsResult mailInPage in operation.GetValuesAsync()) //operation.values
+            var listOfSentences = new List<string>();
+
+            await foreach (var documentsInPage in operation.GetValuesAsync())
             {
-                IReadOnlyCollection<ExtractKeyPhrasesActionResult> summaryResults = mailInPage.ExtractKeyPhrasesResults;
-                foreach (ExtractKeyPhrasesActionResult summaryActionResults in summaryResults)
+                var summaryResults = documentsInPage.ExtractSummaryResults;
+
+                foreach (var summaryResult in summaryResults)
                 {
-                    if (summaryActionResults.HasError)
+                    foreach (var documentResult in summaryResult.DocumentsResults)
                     {
-                        continue;
-                        //throw;
-                    }
-
-                    foreach (ExtractKeyPhrasesResult mailResults in summaryActionResults.DocumentsResults)
-                    {
-                        if (mailResults.HasError)
+                        foreach (var sentence in documentResult.Sentences)
                         {
-                            continue;
+                            listOfSentences.Add(sentence.Text);
                         }
-
-                        //foreach (SummarySentence sentence in mailResults.Sentences)
-                        //{
-
-                        //}
                     }
                 }
             }
+
+            var summarizedMessage = new SummarizedMessage(listOfSentences.ToArray());
+            return summarizedMessage;
         }
     }
 }
