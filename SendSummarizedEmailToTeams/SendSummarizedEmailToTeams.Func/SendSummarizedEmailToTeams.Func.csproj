@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
     <AzureFunctionsVersion>v4</AzureFunctionsVersion>
@@ -7,7 +7,13 @@
     <PackageReference Include="Microsoft.Azure.Functions.Extensions" Version="1.1.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Storage" Version="5.0.0" />
     <PackageReference Include="Microsoft.Azure.WebJobs.Extensions.Tables" Version="1.0.0" />
+    <PackageReference Include="Microsoft.Graph" Version="5.0.0" />
     <PackageReference Include="Microsoft.NET.Sdk.Functions" Version="4.1.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <FunctionsPreservedDependencies Include="System.Text.Json.dll" />
+    <FunctionsPreservedDependencies Include="System.Diagnostics.DiagnosticSource.dll" />
+    <FunctionsPreservedDependencies Include="System.Text.Encodings.Web.dll" />
   </ItemGroup>
   <ItemGroup>
     <None Update="host.json">

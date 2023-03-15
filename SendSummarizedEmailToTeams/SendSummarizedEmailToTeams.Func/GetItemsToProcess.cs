@@ -11,8 +11,8 @@ namespace SendSummarizedEmailToTeams.Func
     public class GetItemsToProcess
     {
         [FunctionName("GetItemsToProcess")]
-        public static async Task Run(
-            [TimerTrigger("*/5 * * * * *")] TimerInfo myTimer,
+        public async Task Run(
+            [TimerTrigger("*/30 * * * * *")] TimerInfo myTimer,
             [Queue("items-to-process", Connection = "StorageConnection")] IAsyncCollector<ItemToProcess> collector,
             [Table("ItemsToProcess", Connection = "StorageConnection")] TableClient tableClient,
             ILogger log)
