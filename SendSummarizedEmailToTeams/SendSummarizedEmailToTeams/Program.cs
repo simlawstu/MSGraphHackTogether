@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.Identity.Web;
 using Microsoft.Identity.Web.UI;
+using SendSummarizedEmailToTeams.ChannelRetrieval;
 using SendSummarizedEmailToTeams.ChannelPosting;
 using SendSummarizedEmailToTeams.MailRetrieval;
 
@@ -33,11 +34,15 @@ builder.Services.AddControllersWithViews(options =>
 });
 
 var services = builder.Services;
-//var graphServiceClient = new GraphServiceClient(new DefaultAzureCredential());
-//services.AddScoped((provider) => graphServiceClient);
 services.AddScoped<IMailRetrievalService, MailRetrievalService>();
 services.AddScoped<IChannelPostingService, ChannelPostingService>();
-services.AddAutoMapper((config) => config.AddProfile<MapperProfile>());
+services.AddScoped<IChannelRetrievalService, ChannelRetrievalService>();
+services.AddAutoMapper((config) =>
+    {
+        config.AddProfile<SendSummarizedEmailToTeams.MailRetrieval.MapperProfile>();
+        config.AddProfile<SendSummarizedEmailToTeams.ChannelRetrieval.MapperProfile>();
+        config.AddProfile< SendSummarizedEmailToTeams.ChannelPosting.MapperProfile>();
+    });
 
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI();
