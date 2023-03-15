@@ -16,6 +16,9 @@
     <FunctionsPreservedDependencies Include="System.Text.Encodings.Web.dll" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SendSummarizedEmailToTeams\SendSummarizedEmailToTeams.csproj" />
+  </ItemGroup>
+  <ItemGroup>
     <None Update="host.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

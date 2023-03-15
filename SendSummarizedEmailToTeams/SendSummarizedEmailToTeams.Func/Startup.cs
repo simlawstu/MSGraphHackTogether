@@ -6,6 +6,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Graph;
+using SendSummarizedEmailToTeams.ChannelPosting;
 using SendSummarizedEmailToTeams.MailRetrieval;
 using System;
 using System.Collections.Generic;
@@ -29,6 +30,7 @@ namespace SendSummarizedEmailToTeams
             var graphServiceClient = new GraphServiceClient(new DefaultAzureCredential());
             services.AddScoped((provider) => graphServiceClient);
             services.AddScoped<IMailRetrievalService, MailRetrievalService>();
+            services.AddScoped<IChannelPostingService, ChannelPostingService>();
             services.AddAutoMapper((config) => config.AddProfile<MailRetrieval.MapperProfile>());
             
             services.AddControllersWithViews();
