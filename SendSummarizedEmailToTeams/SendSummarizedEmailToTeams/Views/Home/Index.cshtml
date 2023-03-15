@@ -3,22 +3,71 @@
     ViewData["Title"] = "Home Page";
 }
 
+<div class="row">
+    <div class="col col-2">
+        <h1 class="mb-3">Mail</h1>
+        <ul class="list-unstyled">
+            @foreach (var mailItem in Model.Mail)
+            {
+                <li>
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-3"><p>@Html.ActionLink(mailItem.Subject, "Index", "Home", new { emailId = mailItem.Id})</p></h5>
+                            <h5 class="mb-3">@mailItem.From</h5>
+                        </div>
+                    </div>
+                </li>
+            }
+        </ul>
+    </div>
+    <div class="col col-8">
+        <h1 class="mb-3">Selected Mail</h1>
+        @if (Model.SelectedMail != null)
+        {
+            <div class="card">
+                <div class="card-header">
+                    <h4 class="mb-3">@Model.SelectedMail.Subject</h4>
+                    <h4 class="mb-3">@Model.SelectedMail.From</h4>
+                </div>
+                <div class="card-body">
+                    @Html.Raw(Model.SelectedMail.Body)
+                </div>
+            </div>
+        }
+    </div>
+    <div class="col col-2">
+        <h1 class="mb-3">Channels</h1>
+        <div class="list-unstyled list-group">
+            @foreach (var team in Model.Teams)
+            {
+                <div class="list-group-item">
+                    <p class="text-justify text-uppercase font-weight-bold">@team.Name</p>
+                    <div class="list-group">
+                        @foreach (var channel in team.Channels)
+                        {
+                            var cssClass = "list-group-item";
+                            if (!Model.EmailSelected)
+                            {
+                                cssClass += " disabled";
+                                @Html.ActionLink(channel.Name, "PostToChannel", "Home", new { emailId = Model.SelectedMail?.Id, teamId = team.Id, channelId = channel.Id}, new { @class = cssClass })
+                            }
+                            else
+                            {
+                                @Html.ActionLink(channel.Name, "PostToChannel", "Home", new { emailId = Model.SelectedMail?.Id, teamId = team.Id, channelId = channel.Id}, new { @class = cssClass })
+                            }
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
 <div class="text-center">
     <h1 class="display-4">Welcome</h1>
     <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
 </div>
 
 <div class="messages">
-    <ul>
-        @foreach (var mailItem in Model.Mail)
-        {
-            <li>
-                <div>
-                    <p>@mailItem.From</p>
-                    <p>@mailItem.Subject</p>
-                    <p>@mailItem.Body</p>
-                </div>
-            </li>
-        }
-    </ul>
+
 </div>
