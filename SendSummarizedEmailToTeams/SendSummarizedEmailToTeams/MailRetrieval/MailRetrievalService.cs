@@ -3,7 +3,7 @@ using Microsoft.Graph;
 
 namespace SendSummarizedEmailToTeams.MailRetrieval
 {
-    public class MailRetrievalService
+    public class MailRetrievalService : IMailRetrievalService
     {
         private readonly GraphServiceClient _client;
         private readonly IMapper _mapper;
@@ -16,7 +16,9 @@ namespace SendSummarizedEmailToTeams.MailRetrieval
 
         public async Task<IEnumerable<RetrievedMail>> GetMail()
         {
-            var mailResponse = await _client.Me.MailFolders["Index"].Messages.GetAsync();
+            var mailboxes = await _client.Me.MailFolders.Request().GetAsync();
+            var inbox = mailboxes.FirstOrDefault(mb => mb.DisplayName == "Inbox");
+            var mailResponse = await _client.Me.MailFolders[inbox.Id].Messages.Request().GetAsync();
             var retrievedMail = _mapper.Map<IEnumerable<RetrievedMail>>(mailResponse);
 
             return retrievedMail;

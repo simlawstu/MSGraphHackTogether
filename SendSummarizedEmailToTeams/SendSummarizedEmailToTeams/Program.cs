@@ -1,12 +1,9 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Identity.Web;
-using Microsoft.Identity.Web.UI;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
+using Microsoft.Identity.Web;
+using Microsoft.Identity.Web.UI;
+using SendSummarizedEmailToTeams.MailRetrieval;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,8 +16,9 @@ builder.Services.AddAuthentication(OpenIdConnectDefaults.AuthenticationScheme)
             .AddMicrosoftGraph(builder.Configuration.GetSection("MicrosoftGraph"))
             .AddInMemoryTokenCaches();
 
-builder.Services.AddAuthorization(options =>
 
+
+builder.Services.AddAuthorization(options =>
 {
     options.FallbackPolicy = options.DefaultPolicy;
 });
@@ -32,6 +30,13 @@ builder.Services.AddControllersWithViews(options =>
         .Build();
     options.Filters.Add(new AuthorizeFilter(policy));
 });
+
+var services = builder.Services;
+//var graphServiceClient = new GraphServiceClient(new DefaultAzureCredential());
+//services.AddScoped((provider) => graphServiceClient);
+services.AddScoped<IMailRetrievalService, MailRetrievalService>();
+services.AddAutoMapper((config) => config.AddProfile<MapperProfile>());
+
 builder.Services.AddRazorPages()
     .AddMicrosoftIdentityUI();
 
